@@ -5,7 +5,7 @@ import java.io.File
 fun checkMarkDown(it: File) {
     if (!it.name.startsWith("DIP-")) throw MDMustStartWithDIPException()
     val dipNumberFromFile = it.nameWithoutExtension.removePrefix("DIP-")
-    if (dipNumberFromFile.toIntOrNull()==null) throw MDMustEndWithNUmber(dipNumberFromFile)
+    if (dipNumberFromFile.toIntOrNull() == null) throw MDMustEndWithNUmber(dipNumberFromFile)
 
     it.readText().lines().forEachIndexed { index, s ->
         when (index) {
@@ -13,15 +13,17 @@ fun checkMarkDown(it: File) {
             1 -> {
                 if (!s.startsWith("DIP: ")) throw FirsHeaderMustBeDIPHeader()
                 val dipNumberFromHeader = s.removePrefix("DIP: ")
-                if (dipNumberFromHeader != dipNumberFromFile) throw DIPHeaderNumberDoesNotMatchFilename(dipNumberFromFile,dipNumberFromHeader)
+                if (dipNumberFromHeader != dipNumberFromFile) throw DIPHeaderNumberDoesNotMatchFilename(dipNumberFromFile, dipNumberFromHeader)
             }
         }
     }
 }
 
-fun checkFolder(folder: File): Boolean {
+fun checkFolder(folder: File): String? {
 
     if (!folder.exists()) throw FolderMustExist(folder.absolutePath)
+
+    var processed = 0
     folder.walk().filter { it != folder }.forEach {
 
         when {
@@ -31,8 +33,8 @@ fun checkFolder(folder: File): Boolean {
             it.name == "images" -> if (!it.isDirectory) throw ImagesMustBeDirectory()
             else -> throw FoundExtraFileException(it.name)
         }
-
+        processed++
     }
-    return true
+    return "Successfully checked $processed files"
 }
 
