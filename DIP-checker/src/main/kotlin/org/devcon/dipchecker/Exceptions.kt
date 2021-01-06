@@ -1,5 +1,6 @@
 package org.devcon.dipchecker
 
+class FolderMustExist(name: String) : Exception("folder $name does not exist")
 class FoundExtraFileException(name: String) : Exception("found file $name which is not an md or the images directory")
 class InvalidImageException(name: String) : Exception("Found file in images directory that does not seem to be an image: $name")
 class InvalidHeaderStart(fileName: String) : Exception("Header must start with --- at $fileName")

@@ -68,4 +68,11 @@ class TheDIPChecker {
         }
     }
 
+    @Test
+    fun shouldFailForNonExistingPath() {
+        assertFailsWith(FolderMustExist::class) {
+            assertTrue(checkFolder(File("yolo")))
+        }
+    }
+
 }

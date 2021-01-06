@@ -21,6 +21,7 @@ fun checkMarkDown(it: File) {
 
 fun checkFolder(folder: File): Boolean {
 
+    if (!folder.exists()) throw FolderMustExist(folder.absolutePath)
     folder.walk().filter { it != folder }.forEach {
 
         when {
