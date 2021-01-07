@@ -65,6 +65,14 @@ class TheDIPChecker {
         }
     }
 
+
+    @Test
+    fun shouldFailOnInvalidDate() {
+        assertFailsWith(InvalidDateException::class) {
+            checkFolder(File(javaClass.getResource("/invalid/invalidDate").toURI()))
+        }
+    }
+
     @Test
     fun shouldFailOnInvalidMDFileName() {
         assertFailsWith(MDMustStartWithDIPException::class) {

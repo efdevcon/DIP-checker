@@ -2,6 +2,12 @@ package  org.devcon.dipchecker
 
 import org.devcon.dipchecker.ParseState.*
 import java.io.File
+import java.lang.Exception
+import java.lang.IllegalStateException
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.ResolverStyle
+import java.time.temporal.TemporalAccessor
 
 enum class ParseState { START, HEADER, BODY }
 
@@ -28,7 +34,25 @@ fun checkMarkDown(file: File) {
                 if (s == "---") parseState = BODY
                 else if (headerKeyValueList.size != 2) throw InvalidHeaderException(s, file.name)
                 else if (!allHeaders.contains(headerName)) throw InvalidHeaderException(s, file.name)
-                else if (headerName == "DIP") {
+                else if (headerName == "Created") {
+                    try {
+                        val foo: TemporalAccessor = DateTimeFormatter
+                            .ofPattern("yyyy-M-d").parse(headerKeyValueList.last())
+                        LocalDate.from(foo)
+                    } catch (e: Exception) {
+                        throw InvalidDateException(s, file.name)
+                    }
+                    /*
+
+                        dateFormat.apply {
+                            isLenient = true
+                        }.parse(headerKeyValueList.last())
+                    } catch (e: Exception) {
+
+                    }
+
+                     */
+                } else if (headerName == "DIP") {
                     val dipNumberFromHeader = headerKeyValueList.last()
                     if (dipNumberFromHeader != dipNumberFromFile) throw DIPHeaderNumberDoesNotMatchFilename(dipNumberFromFile, dipNumberFromHeader)
                 }
