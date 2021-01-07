@@ -1,22 +1,49 @@
 package  org.devcon.dipchecker
 
+import org.devcon.dipchecker.ParseState.*
 import java.io.File
 
-fun checkMarkDown(it: File) {
-    if (!it.name.startsWith("DIP-")) throw MDMustStartWithDIPException()
-    val dipNumberFromFile = it.nameWithoutExtension.removePrefix("DIP-")
+enum class ParseState { START, HEADER, BODY }
+
+fun checkMarkDown(file: File) {
+    if (!file.name.startsWith("DIP-")) throw MDMustStartWithDIPException()
+    val dipNumberFromFile = file.nameWithoutExtension.removePrefix("DIP-")
     if (dipNumberFromFile.toIntOrNull() == null) throw MDMustEndWithNUmber(dipNumberFromFile)
 
-    it.readText().lines().forEachIndexed { index, s ->
-        when (index) {
-            0 -> if (s != "---") throw InvalidHeaderStart(it.name)
-            1 -> {
-                if (!s.startsWith("DIP: ")) throw FirsHeaderMustBeDIPHeader()
-                val dipNumberFromHeader = s.removePrefix("DIP: ")
-                if (dipNumberFromHeader != dipNumberFromFile) throw DIPHeaderNumberDoesNotMatchFilename(dipNumberFromFile, dipNumberFromHeader)
+    var parseState = START
+    val headers = mutableListOf<String>()
+
+    file.readText().lines().forEach { s ->
+        when (parseState) {
+            START -> {
+                if (s != "---")
+                    throw InvalidHeaderStart(file.name)
+                else
+                    parseState = HEADER
             }
+            HEADER -> {
+                val headerKeyValueList = s.split(": ")
+                val headerName = headerKeyValueList.first()
+
+                if (s == "---") parseState = BODY
+                else if (headerKeyValueList.size != 2) throw InvalidHeaderException(s, file.name)
+                else if (!allHeaders.contains(headerName)) throw InvalidHeaderException(s, file.name)
+                else if (headerName == "DIP") {
+                    val dipNumberFromHeader = headerKeyValueList.last()
+                    if (dipNumberFromHeader != dipNumberFromFile) throw DIPHeaderNumberDoesNotMatchFilename(dipNumberFromFile, dipNumberFromHeader)
+                }
+
+                headers.add(headerName)
+            }
+
+
         }
     }
+
+    if (!headers.containsAll(mandatoryHeaders)) throw MissingHeaderException(mandatoryHeaders.subtract(headers).joinToString(), file.name)
+
+    if (parseState != BODY) throw HeaderNotClosed(file.name)
+
 }
 
 fun checkFolder(folder: File): String? {
