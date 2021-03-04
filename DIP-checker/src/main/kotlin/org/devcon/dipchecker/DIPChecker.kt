@@ -3,17 +3,17 @@ package  org.devcon.dipchecker
 import org.devcon.dipchecker.ParseState.*
 import java.io.File
 import java.lang.Exception
-import java.lang.IllegalStateException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.time.format.ResolverStyle
 import java.time.temporal.TemporalAccessor
 
 enum class ParseState { START, HEADER, BODY }
 
-fun checkMarkDown(file: File) {
-    if (!file.name.startsWith("DIP-")) throw MDMustStartWithDIPException()
-    val dipNumberFromFile = file.nameWithoutExtension.removePrefix("DIP-")
+fun checkMarkDown(file: File, prefix: String="eip") {
+    if (file.name == "eip-20-token-standard.md") return
+    println("processing ${file.name}")
+    if (!file.name.startsWith("$prefix-")) throw MDMustStartWithDIPException()
+    val dipNumberFromFile = file.nameWithoutExtension.removePrefix("$prefix-")
     if (dipNumberFromFile.toIntOrNull() == null) throw MDMustEndWithNUmber(dipNumberFromFile)
 
     var parseState = START
@@ -32,7 +32,7 @@ fun checkMarkDown(file: File) {
                 val headerName = headerKeyValueList.first()
 
                 if (s == "---") parseState = BODY
-                else if (headerKeyValueList.size != 2) throw InvalidHeaderException(s, file.name)
+                else if (headerKeyValueList.size < 2) throw InvalidHeaderException(s, file.name)
                 else if (!allHeaders.contains(headerName)) throw InvalidHeaderException(s, file.name)
                 else if (headerName == "Created") {
                     try {
@@ -52,7 +52,7 @@ fun checkMarkDown(file: File) {
                     }
 
                      */
-                } else if (headerName == "DIP") {
+                } else if (headerName == prefix) {
                     val dipNumberFromHeader = headerKeyValueList.last()
                     if (dipNumberFromHeader != dipNumberFromFile) throw DIPHeaderNumberDoesNotMatchFilename(dipNumberFromFile, dipNumberFromHeader)
                 }
