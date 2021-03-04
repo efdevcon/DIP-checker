@@ -42,16 +42,7 @@ fun checkMarkDown(file: File, prefix: String="eip") {
                     } catch (e: Exception) {
                         throw InvalidDateException(s, file.name)
                     }
-                    /*
 
-                        dateFormat.apply {
-                            isLenient = true
-                        }.parse(headerKeyValueList.last())
-                    } catch (e: Exception) {
-
-                    }
-
-                     */
                 } else if (headerName == prefix) {
                     val dipNumberFromHeader = headerKeyValueList.last()
                     if (dipNumberFromHeader != dipNumberFromFile) throw DIPHeaderNumberDoesNotMatchFilename(dipNumberFromFile, dipNumberFromHeader)
