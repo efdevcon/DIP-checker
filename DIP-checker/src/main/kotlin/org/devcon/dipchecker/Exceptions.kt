@@ -9,7 +9,7 @@ class InvalidHeaderException(header: String, fileName: String) : Exception("Inva
 class InvalidDateException(date: String, fileName: String) : Exception("Invalid Date $date in $fileName")
 class MissingHeaderException(header: String, fileName: String) : Exception("Missing Header $header in $fileName")
 class ImagesMustBeDirectory : Exception("Images must be directory")
-class MDMustStartWithDIPException : Exception("md file must start with DIP-")
+class MDMustStartWithPrefixException(prefix: String, name: String) : Exception("md file must start with $prefix- but is $name")
 class MDMustEndWithNUmber(name: String) : Exception("md end with a number - but was '$name'")
 class DIPHeaderNumberDoesNotMatchFilename(fromFileName: String, fromHeader: String) :
     Exception("The DIP number in the filename ($fromFileName) must be the same in the Header ($fromHeader)")

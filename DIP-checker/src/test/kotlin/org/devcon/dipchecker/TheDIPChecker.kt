@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
 
 class TheDIPChecker {
 
@@ -75,7 +74,7 @@ class TheDIPChecker {
 
     @Test
     fun shouldFailOnInvalidMDFileName() {
-        assertFailsWith(MDMustStartWithDIPException::class) {
+        assertFailsWith(MDMustStartWithPrefixException::class) {
             checkFolder(File(javaClass.getResource("/invalid/mdMustStartWithDIP").toURI()))
         }
     }
