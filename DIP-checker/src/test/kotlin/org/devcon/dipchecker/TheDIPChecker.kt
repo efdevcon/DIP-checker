@@ -9,27 +9,27 @@ class TheDIPChecker {
 
     @Test
     fun shouldPassForValidDIPFolder() {
-        assertThat(checkFolder(File(javaClass.getResource("/valid").toURI()))).startsWith("Successfully")
+        assertThat(checkFolder(File(javaClass.getResource("/valid").toURI()), DIPDefinition())).startsWith("Successfully")
     }
 
     @Test
     fun shouldFailOnExtraFile() {
         assertFailsWith(FoundExtraFileException::class) {
-            checkFolder(File(javaClass.getResource("/invalid/extraFile").toURI()))
+            checkFolder(File(javaClass.getResource("/invalid/extraFile").toURI()), DIPDefinition())
         }
     }
 
     @Test
     fun shouldFailOnHeaderNotClosed() {
         assertFailsWith(HeaderNotClosed::class) {
-            checkFolder(File(javaClass.getResource("/invalid/headerNotClosed").toURI()))
+            checkFolder(File(javaClass.getResource("/invalid/headerNotClosed").toURI()), DIPDefinition())
         }
     }
 
     @Test
     fun shouldFailOnInvalidImage() {
         assertFailsWith(InvalidImageException::class) {
-            checkFolder(File(javaClass.getResource("/invalid/invalidImage").toURI()))
+            checkFolder(File(javaClass.getResource("/invalid/invalidImage").toURI()), DIPDefinition())
         }
     }
 
@@ -37,14 +37,14 @@ class TheDIPChecker {
     @Test
     fun shouldFailOnInvalidHeaderStart() {
         assertFailsWith(InvalidHeaderStart::class) {
-            checkFolder(File(javaClass.getResource("/invalid/invalidHeaderStart").toURI()))
+            checkFolder(File(javaClass.getResource("/invalid/invalidHeaderStart").toURI()), DIPDefinition())
         }
     }
 
     @Test
     fun shouldFailOnInvalidHeader() {
         assertFailsWith(InvalidHeaderStart::class) {
-            checkFolder(File(javaClass.getResource("/invalid/invalidHeader").toURI()))
+            checkFolder(File(javaClass.getResource("/invalid/invalidHeader").toURI()), DIPDefinition())
         }
     }
 
@@ -52,7 +52,7 @@ class TheDIPChecker {
     @Test
     fun shouldFailOnMissingHeader() {
         assertFailsWith(InvalidHeaderStart::class) {
-            checkFolder(File(javaClass.getResource("/invalid/missingHeader").toURI()))
+            checkFolder(File(javaClass.getResource("/invalid/missingHeader").toURI()), DIPDefinition())
         }
     }
 
@@ -60,7 +60,7 @@ class TheDIPChecker {
     @Test
     fun shouldFailOnImagesNotDir() {
         assertFailsWith(ImagesMustBeDirectory::class) {
-            checkFolder(File(javaClass.getResource("/invalid/imagesMustBeDirectory").toURI()))
+            checkFolder(File(javaClass.getResource("/invalid/imagesMustBeDirectory").toURI()), DIPDefinition())
         }
     }
 
@@ -68,35 +68,35 @@ class TheDIPChecker {
     @Test
     fun shouldFailOnInvalidDate() {
         assertFailsWith(InvalidDateException::class) {
-            checkFolder(File(javaClass.getResource("/invalid/invalidDate").toURI()))
+            checkFolder(File(javaClass.getResource("/invalid/invalidDate").toURI()), DIPDefinition())
         }
     }
 
     @Test
     fun shouldFailOnInvalidMDFileName() {
         assertFailsWith(MDMustStartWithPrefixException::class) {
-            checkFolder(File(javaClass.getResource("/invalid/mdMustStartWithDIP").toURI()))
+            checkFolder(File(javaClass.getResource("/invalid/mdMustStartWithDIP").toURI()), DIPDefinition())
         }
     }
 
     @Test
     fun shouldFailOnIMDNotEndingWithNumber() {
         assertFailsWith(MDMustEndWithNUmber::class) {
-            checkFolder(File(javaClass.getResource("/invalid/mdMustEndWithNumber").toURI()))
+            checkFolder(File(javaClass.getResource("/invalid/mdMustEndWithNumber").toURI()), DIPDefinition())
         }
     }
 
     @Test
     fun shouldFailOnDIPNumberMissMatch() {
         assertFailsWith(DIPHeaderNumberDoesNotMatchFilename::class) {
-            checkFolder(File(javaClass.getResource("/invalid/dipNumbersMustMatch").toURI()))
+            checkFolder(File(javaClass.getResource("/invalid/dipNumbersMustMatch").toURI()), DIPDefinition())
         }
     }
 
     @Test
     fun shouldFailForNonExistingPath() {
         assertFailsWith(FolderMustExist::class) {
-            checkFolder(File("yolo"))
+            checkFolder(File("yolo"), DIPDefinition())
         }
     }
 
